@@ -13,8 +13,8 @@
 extern "C" {
 #endif
 
-char *optimize_shader(char *source, GLenum type, int vGLSLVersion, int vTargetGLSLVersion );
-
+char* MesaConvertShader(const char * const *src, GLenum type, unsigned int glsl, unsigned int essl);
+  
 #ifdef __cplusplus
 } /* extern C */
 #endif
