@@ -34,12 +34,12 @@ __attribute((visibility("default"))) char *optimize_shader(const char * const *s
         return nullptr;
     }
     char * optimized_shader = converter.Optimize(
-            source,
+            src,
             stage,
             GlslConvert::API_OPENGL_COMPAT,
             GlslConvert::LANGUAGE_TARGET_GLSL,
-            vGLSLVersion,
-            vTargetGLSLVersion,
+            glsl,
+            essl,
             true,
             optimizationStruct
             );
