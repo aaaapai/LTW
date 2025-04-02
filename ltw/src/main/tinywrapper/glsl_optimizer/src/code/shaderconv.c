@@ -6,6 +6,6 @@
 
 #include "c_wrapper.h"
 
-__attribute((visibility("default"))) char* MesaConvertShader(const char * const *src, GLenum type, unsigned int glsl, unsigned int essl) {
+__attribute((visibility("default"))) char* MesaConvertShader(const char *src, GLenum type, unsigned int glsl, unsigned int essl) {
     return optimize_shader(src, type, glsl, essl);
 }
