@@ -36,7 +36,7 @@ __attribute((visibility("default"))) char *optimize_shader(const char * const *s
     char * optimized_shader = converter.Optimize(
             src,
             stage,
-            GlslConvert::API_OPENGL_COMPAT,
+            GlslConvert::API_OPENGL_CORE,
             GlslConvert::LANGUAGE_TARGET_GLSL,
             glsl,
             essl,
