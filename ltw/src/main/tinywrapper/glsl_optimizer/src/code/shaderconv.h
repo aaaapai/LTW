@@ -5,6 +5,6 @@
 #ifndef FOLD_CRAFT_LAUNCHER_SHADERCONV_H
 #define FOLD_CRAFT_LAUNCHER_SHADERCONV_H
 
-char* MesaConvertShader(const char * const *src, unsigned int type, unsigned int glsl, unsigned int essl);
+char* MesaConvertShader(const char *src, unsigned int type, unsigned int glsl, unsigned int essl);
 
 #endif //FOLD_CRAFT_LAUNCHER_SHADERCONV_H
