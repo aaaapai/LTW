@@ -4,8 +4,8 @@
 
 #include "shaderconv.h"
 
-char* (*optimize_shader)(const char * const *src, unsigned int type, unsigned int glsl, unsigned int essl);
+#include "c_wrapper.h"
 
-char* MesaConvertShader(const char * const *src, unsigned int type, unsigned int glsl, unsigned int essl) {
+char* MesaConvertShader(const char * const *src, GLenum type, unsigned int glsl, unsigned int essl) {
     return optimize_shader(src, type, glsl, essl);
 }
