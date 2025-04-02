@@ -242,7 +242,7 @@ protected:
 
 public:
 	char * Optimize(
-		const char * vShaderSource,
+		const char *const * vShaderSource,
 		ShaderStage vShaderType,
 		ApiTarget vTarget, 
 		LanguageTarget vLanguageTarget, 
