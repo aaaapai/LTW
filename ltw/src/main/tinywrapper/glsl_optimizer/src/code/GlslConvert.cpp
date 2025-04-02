@@ -123,7 +123,7 @@ char * GlslConvert::Optimize(
 	//_mesa_glsl_read_ir(state, shader->ir, input.c_str(), true);
 
 	shader->Source = vShaderSource;
-	const char* source = shader->Source;
+	const char *const * source = shader->Source;
 
 	if (!(vOptimizationStruct.controlFlags & ControlFlags::CONTROL_SKIP_PREPROCESSING))
 	{
