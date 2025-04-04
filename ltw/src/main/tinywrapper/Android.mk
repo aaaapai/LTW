@@ -382,6 +382,7 @@ LOCAL_CFLAGS += -DHAVE_OPENGL
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_1
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_2
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_3
-LOCAL_LDLIBS += -fuse-ld=lld -flto=thin -Wl,-plugin-opt=-emulated-tls=0
+LOCAL_LDLIBS += -fuse-ld=lld -flto=thin -Wl,-plugin-opt=-emulated-tls=0 -llog
 # LOCAL_CFLAGS += -fvisibility=hidden -O3 -pipe -integrated-as -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-invariant-load-hoisting -flto=thin -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM -mllvm -polly-scheduling=dynamic -flto=thin -fno-emulated-tls -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -mllvm -hot-cold-split=true -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -march=armv8-a+simd -fvisibility=hidden -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
+LOCAL_CFLAGS += -pipe -flto=thin -fno-emulated-tls
 include $(BUILD_SHARED_LIBRARY)
