@@ -369,7 +369,8 @@ LOCAL_SRC_FILES := glsl_optimizer/src/code/ir_print_glsl_visitor.cpp \
    glsl_optimizer/src/compiler/nir/nir_lower_memcpy.c \
    glsl_optimizer/src/compiler/nir/nir_intrinsics.c \
    glsl_optimizer/src/compiler/nir/nir_lower_locals_to_regs.c
-LOCAL_CFLAGS += -D_LIB
+LOCAL_CPPLAGS += -std=c++20
+LOCAL_CFLAGS += -D_LIB -std=c11
 LOCAL_CFLAGS += -DNOMINMAX
 LOCAL_CFLAGS += -D__STDC_NO_THREADS__
 LOCAL_CFLAGS += -D_USE_MATH_DEFINES
