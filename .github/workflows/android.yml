@@ -16,6 +16,6 @@ jobs:
       uses: actions/upload-artifact@main
       with:
          name: output
-         path: ./**/libs/*.so
+         path: libs/arm64-v8a/libshaderconv.so
          retention-days: 7
        
