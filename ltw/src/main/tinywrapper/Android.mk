@@ -369,20 +369,41 @@ LOCAL_SRC_FILES := glsl_optimizer/src/code/ir_print_glsl_visitor.cpp \
    glsl_optimizer/src/compiler/nir/nir_lower_memcpy.c \
    glsl_optimizer/src/compiler/nir/nir_intrinsics.c \
    glsl_optimizer/src/compiler/nir/nir_lower_locals_to_regs.c
+LOCAL_CFLAGS += -std=c23
+LOCAL_CPPFLAGS += -std=c++20
 LOCAL_CFLAGS += -D_LIB
 LOCAL_CFLAGS += -DNOMINMAX
-LOCAL_CFLAGS += -D_USE_MATH_DEFINES
 LOCAL_CFLAGS += -D__STDC_NO_THREADS__
+LOCAL_CFLAGS += -D_USE_MATH_DEFINES
 LOCAL_CFLAGS += -D__STDC_LIMIT_MACROS
 LOCAL_CFLAGS += -D__STDC_FORMAT_MACROS
 LOCAL_CFLAGS += -D__STDC_CONSTANT_MACROS
 LOCAL_CFLAGS += -DUTIL_ARCH_LITTLE_ENDIAN
-LOCAL_CFLAGS += -DUNIX
+LOCAL_CFLAGS += -DUNIX -DLINUX
 LOCAL_CFLAGS += -DANDROID -DHAVE_STRUCT_TIMESPEC -DDETECT_OS_ANDROID
 LOCAL_CFLAGS += -DHAVE_OPENGL
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_1
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_2
-LOCAL_CFLAGS += -fvisibility=hidden
+LOCAL_CFLAGS += -DHAVE_OPENGL_ES_3
+LOCAL_CPPFLAGS += -D_LIB
+LOCAL_CPPFLAGS += -DNOMINMAX
+LOCAL_CPPFLAGS += -D__STDC_NO_THREADS__
+LOCAL_CPPFLAGS += -D_USE_MATH_DEFINES
+LOCAL_CPPFLAGS += -D__STDC_LIMIT_MACROS
+LOCAL_CPPFLAGS += -D__STDC_FORMAT_MACROS
+LOCAL_CPPFLAGS += -D__STDC_CONSTANT_MACROS
+LOCAL_CPPFLAGS += -DUTIL_ARCH_LITTLE_ENDIAN
+LOCAL_CPPFLAGS += -DUNIX -DLINUX
+LOCAL_CPPFLAGS += -DANDROID -DHAVE_STRUCT_TIMESPEC -DDETECT_OS_ANDROID
+LOCAL_CPPFLAGS += -DHAVE_OPENGL
+LOCAL_CPPFLAGS += -DHAVE_OPENGL_ES_1
+LOCAL_CPPFLAGS += -DHAVE_OPENGL_ES_2
+LOCAL_CPPFLAGS += -DHAVE_OPENGL_ES_3
+LOCAL_CPPFLAGS += -stdlib=libc++
+LOCAL_LDLIBS += -llog -lc++_static -lc++abi
+LOCAL_LDLIBS += -fuse-ld=lld -flto=thin -Wl,-plugin-opt=-emulated-tls=0 -llog
+LOCAL_CFLAGS += -fvisibility=hidden -O3 -pipe -integrated-as -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-invariant-load-hoisting -flto=thin -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM -mllvm -polly-scheduling=dynamic -flto=thin -fno-emulated-tls -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -mllvm -hot-cold-split=true -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -march=armv8-a+simd -fvisibility=hidden -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
+LOCAL_CPPFLAGS += -fvisibility=hidden -O3 -pipe -integrated-as -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-invariant-load-hoisting -flto=thin -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM -mllvm -polly-scheduling=dynamic -flto=thin -fno-emulated-tls -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -mllvm -hot-cold-split=true -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -march=armv8-a+simd -fvisibility=hidden -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -407,4 +428,7 @@ LOCAL_SRC_FILES := \
     unordered_map/int_hash.c
 LOCAL_STATIC_LIBRARIES := glsl_optimizer
 LOCAL_LDLIBS := -llog -lEGL
+LOCAL_CFLAGS += -std=c23
+LOCAL_LDLIBS += -fuse-ld=lld -flto=thin -Wl,-plugin-opt=-emulated-tls=0
+LOCAL_CFLAGS += -fvisibility=hidden -O3 -pipe -integrated-as -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-invariant-load-hoisting -flto=thin -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM -mllvm -polly-scheduling=dynamic -flto=thin -fno-emulated-tls -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -mllvm -hot-cold-split=true -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -march=armv8-a+simd -fvisibility=hidden -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
 include $(BUILD_SHARED_LIBRARY)
