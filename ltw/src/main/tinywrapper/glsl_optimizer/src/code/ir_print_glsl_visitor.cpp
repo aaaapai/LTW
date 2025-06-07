@@ -173,11 +173,26 @@ char * IR_TO_GLSL::Convert(
 			res.append("#extension GL_EXT_texture_array : enable\n");
 
         // Search for internal GL variables and enable extensions based on them
+        bool uses_buffer_sampler = false;
         foreach_in_list(ir_instruction, ir, instructions)
         {
             // Skip non-variables
             if(ir->ir_type != ir_type_variable) continue;
             auto* var = (ir_variable*)ir;
+            // Check for buffer texture samplers. Need to enable (and/or set precision) for them
+            const char* type = var->type->name;
+            if(type != nullptr && (strstr(type, "samplerBuffer") != nullptr || strstr(type, "imageBuffer") != nullptr) && !uses_buffer_sampler) {
+                uses_buffer_sampler = true;
+                if(state->es_shader && state->language_version < 320) {
+                    res.append("#extension GL_EXT_texture_buffer : enable\n");
+                }
+            }
+            // Check for interpolation type. Need to enable the noperspective interpolation extension
+            // if used.
+            if(var->data.interpolation == glsl_interp_mode::INTERP_MODE_NOPERSPECTIVE && !state->NV_shader_noperspective_interpolation_enable) {
+                state->NV_shader_noperspective_interpolation_enable = true;
+                res.append("#extension GL_NV_shader_noperspective_interpolation : enable\n");
+            }
             // Skip non-internal variables
             if(strstr(var->name, "gl_") != var->name) continue;
             const char* name = var->name;
@@ -204,6 +219,14 @@ char * IR_TO_GLSL::Convert(
                        "precision %1$s usampler3D;\n"
                        "precision %1$s usamplerCube;\n"
                        "precision %1$s usampler2DArray;\n", "lowp");
+            if(uses_buffer_sampler) {
+                res.append("precision %1$s samplerBuffer;\n"
+                           "precision %1$s isamplerBuffer;\n"
+                           "precision %1$s usamplerBuffer;\n"
+                           "precision %1$s imageBuffer;\n"
+                           "precision %1$s iimageBuffer;\n"
+                           "precision %1$s uimageBuffer;\n", "lowp");
+            }
         }
 
 		for (unsigned i = 0; i < state->num_user_structures; i++)
@@ -434,7 +457,11 @@ IR_TO_GLSL::visit(ir_variable* ir)
 		const int binding_base = (this->state->stage == MESA_SHADER_VERTEX ? (int)VERT_ATTRIB_GENERIC0 : (int)FRAG_RESULT_DATA0);
 		const int location = ir->data.location - binding_base;
 		snprintf(loc, sizeof(loc), "layout(location=%d) ", location);
-	}
+	} else if(!ir->data.explicit_location && ir->data.mode == ir_var_shader_out && this->state->stage == MESA_SHADER_FRAGMENT) {
+        generated_source.append("/* LTW INSERT LOCATION ");
+        print_var_name(ir);
+        generated_source.append(" LTW */");
+    }
 	else if (ir->data.location != -1)
 	{
 		snprintf(loc, sizeof(loc), "location=%i ", ir->data.location);
@@ -691,10 +718,10 @@ const char* const operator_glsl_strs[] = {
    "double", //"u2d",
    "bool",// "d2b",
    "f162b",
-   "bitcast_i2f",
-   "bitcast_f2i",
-   "bitcast_u2f",
-   "bitcast_f2u",
+   "intBitsToFloat",
+   "floatBitsToInt",
+   "uintBitsToFloat",
+   "floatBitsToUint",
    "bitcast_u642d",
    "bitcast_i642d",
    "bitcast_d2u64",
@@ -2120,7 +2147,7 @@ IR_TO_GLSL::visit(ir_loop_jump* ir)
 void
 IR_TO_GLSL::visit(ir_emit_vertex* ir)
 {
-	generated_source.append("emit-vertex-TODO");
+	generated_source.append("EmitVertex();");
 	ir->stream->accept(this);
 	generated_source.append("\n");
 }
@@ -2128,7 +2155,7 @@ IR_TO_GLSL::visit(ir_emit_vertex* ir)
 void
 IR_TO_GLSL::visit(ir_end_primitive* ir)
 {
-	generated_source.append("end-primitive-TODO");
+	generated_source.append("EndPrimitive();");
 	ir->stream->accept(this);
 	generated_source.append("\n");
 }
@@ -2136,7 +2163,7 @@ IR_TO_GLSL::visit(ir_end_primitive* ir)
 void
 IR_TO_GLSL::visit(ir_barrier*)
 {
-	generated_source.append("barrier-TODO\n");
+	generated_source.append("barrier();\n");
 }
 
 void IR_TO_GLSL::visit_uniform_block(ir_variable *ir) {

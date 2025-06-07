@@ -166,8 +166,8 @@ void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei widt
         current_context->proxy_height = ((height<<level)>current_context->maxTextureSize)?0:height;
         current_context->proxy_intformat = internalformat;
     } else {
-        swizzle_process_upload(target, &format, &type);
-        pick_internalformat(&internalformat, &type, &format, &data);
+        if(data != NULL) swizzle_process_upload(target, &format, &type);
+        pick_internalformat(&internalformat, &type, &format, &data, width == height);
         es3_functions.glTexImage2D(target, level, internalformat, width, height, border, format, type, data);
     }
 }
@@ -433,6 +433,36 @@ void glDeleteTextures(GLsizei n, const GLuint *textures) {
         void* tracker = unordered_map_remove(current_context->texture_swztrack_map, (void*)textures[i]);
         free(tracker);
     }
+}
+
+static bool buf_tex_trigger = false;
+
+void glTexBuffer(GLenum target, GLenum internalFormat, GLuint buffer) {
+    if(!current_context) return;
+    if(current_context->es32) es3_functions.glTexBuffer(target, internalFormat, buffer);
+    else if(current_context->buffer_texture_ext) es3_functions.glTexBufferEXT(target, internalFormat, buffer);
+    else if(!buf_tex_trigger) {
+        buf_tex_trigger = true;
+        printf("LTW: Buffer textures aren't supported on your device\n");
+    }
+}
+
+void glTexBufferARB(GLenum target, GLenum internalFormat, GLuint buffer) {
+    glTexBuffer(target, internalFormat, buffer);
+}
+
+void glTexBufferRange(GLenum target, GLenum internalFormat, GLuint buffer, GLintptr offset, GLsizeiptr size) {
+    if(!current_context) return;
+    if(current_context->es32) es3_functions.glTexBufferRange(target, internalFormat, buffer, offset, size);
+    else if(current_context->buffer_texture_ext) es3_functions.glTexBufferRangeEXT(target, internalFormat, buffer, offset, size);
+    else if(!buf_tex_trigger) {
+        buf_tex_trigger = true;
+        printf("LTW: Buffer textures aren't supported on your device\n");
+    }
+}
+
+void glTexBufferRangeARB(GLenum target, GLenum internalFormat, GLuint buffer, GLintptr offset, GLsizeiptr size) {
+    glTexBufferRange(target, internalFormat, buffer, offset, size);
 }
 
 static bool noerror = false;
