@@ -26,7 +26,7 @@ GlslConvert::OptimizationStruct optimizationStruct {}; // Default struct with ev
 
 
 
-__attribute((visibility("default"))) char *optimize_shader(const char *src, GLenum type, unsigned int glsl, unsigned int essl) {
+__attribute((visibility("default"))) char *optimize_shader(char *source, GLenum type, int vGLSLVersion, int vTargetGLSLVersion) {
     GlslConvert& converter = GlslConvert::Instance();
     GlslConvert::ShaderStage stage = getStageForGlEnum(type);
     if(stage == GlslConvert::MESA_SHADER_NONE) {
@@ -34,12 +34,12 @@ __attribute((visibility("default"))) char *optimize_shader(const char *src, GLen
         return nullptr;
     }
     char * optimized_shader = converter.Optimize(
-            src,
+            source,
             stage,
-            GlslConvert::API_OPENGL_CORE,
+            GlslConvert::API_OPENGL_COMPAT,
             GlslConvert::LANGUAGE_TARGET_GLSL,
-            glsl,
-            essl,
+            vGLSLVersion,
+            vTargetGLSLVersion,
             true,
             optimizationStruct
             );
