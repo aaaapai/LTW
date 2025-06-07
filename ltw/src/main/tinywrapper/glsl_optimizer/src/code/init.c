@@ -54,15 +54,15 @@ void *open_lib(const char **names, const char *override) {
 }
 
 void MesaConverterInit() {
-    const char *glslconv_name[] = {"libltw", NULL};
-    void* glslconv = open_lib(glslconv_name, "libltw");
+    const char *glslconv_name[] = {"libshaderconv", NULL};
+    void* glslconv = open_lib(glslconv_name, "libshaderconv");
     if (glslconv == NULL) {
         printf("libltw not found\n");
     }
     else {
         optimize_shader = dlsym(glslconv, "optimize_shader");
         if (optimize_shader) {
-            printf("libltw loaded\n");
+            printf("libshaderconv loaded\n");
         }
     }
 }
