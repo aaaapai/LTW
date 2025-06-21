@@ -18,6 +18,6 @@ jobs:
       uses: actions/upload-artifact@main
       with:
          name: output-aar
-         path: libs/arm64-v8a/libltw.so
+         path: libs/*/libltw.so
          if-no-files-found: error
        
