@@ -6,7 +6,7 @@ LOCAL_PATH := $(HERE_PATH)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := regal
-LOCAL_SRC_FILES := GL/libRegal.so
+LOCAL_SRC_FILES := Regal/libRegal.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
