@@ -21,8 +21,8 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := tinywrapper
-LOCAL_SHARED_LIBRARIES := regal spirv-cross shaderc
-LOCAL_LDLIBS := -lGLESv3
+LOCAL_SHARED_LIBRARIES := spirv-cross shaderc
+LOCAL_LDLIBS := -lGLESv3 -lEGL
 LOCAL_SRC_FILES := main.c string_utils.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/tinywrapper
 include $(BUILD_SHARED_LIBRARY)
