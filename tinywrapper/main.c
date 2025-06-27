@@ -50,13 +50,6 @@ void * (*gles_glMapBufferRange) (GLenum target, GLintptr offset, GLsizeiptr leng
 const GLubyte * (*gles_glGetString) (GLenum name);
 void (*gles_glTexParameterf) (GLenum target, GLenum pname, GLfloat param);
 
-GLAPI APIENTRY void glBindFragDataLocation(GLuint program, GLuint colorNumber, const char * name);
-GLAPI APIENTRY void glBindFragDataLocationEXT(GLuint program, GLuint colorNumber, const char * name);
-
-GLAPI APIENTRY void glClearDepth(GLdouble depth) {
-    glClearDepthf(depth);
-}
-
 GLAPI APIENTRY void *glMapBuffer(GLenum target, GLenum access) {
     // Use: GL_EXT_map_buffer_range
     LOOKUP_FUNC(glGetBufferParameteriv);
@@ -124,7 +117,7 @@ GLAPI APIENTRY void glShaderSource(GLuint shader, GLsizei count, const GLchar * 
 
     // DBG(printf("glShaderSource(%d, %d, %p, %p)\n", shader, count, string, length);)
     char *source = NULL;
-    char *converted;
+    char *converted = NULL;
 
     // get the size of the shader sources and than concatenate in a single string
     int l = 0;
@@ -183,66 +176,10 @@ GLAPI APIENTRY void glShaderSource(GLuint shader, GLsizei count, const GLchar * 
         "#extension GL_EXT_shader_non_constant_global_initializers : enable\n";
     converted = InplaceInsert(GetLine(converted, 1), extensions, converted, &convertedLen);
 
-	
-    if(context == NULL) {
-        spvc_context_create(&context);
-        if(context == NULL) {
-            printf("SPVC Context could not be created!\n");
-        }
-    }
-    if(compiler == NULL) {
-        compiler = shaderc_compiler_initialize();
-        if(compiler == NULL) {
-            printf("Compiler could not be created!\n");
-        }
-    }
-
-    // printf("Input GLSL:\n%s", *string);
-
-    shaderc_compile_options_t opts = shaderc_compile_options_initialize();
-    shaderc_compile_options_set_forced_version_profile(opts, 450, shaderc_profile_core);
-    shaderc_compile_options_set_auto_map_locations(opts, true);
-    shaderc_compile_options_set_auto_bind_uniforms(opts, true);
-    shaderc_compile_options_set_target_env(opts, shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
-
-    shaderc_compilation_result_t outSPIRVRes = shaderc_compile_into_spv(compiler, *string,
-                                                                        strlen(*string),
-                                                                        currShaderType == GL_VERTEX_SHADER ?
-                                                                        shaderc_glsl_vertex_shader : shaderc_glsl_fragment_shader,
-                                                                        "qcxr_shader", "main", opts);
-    if(shaderc_result_get_compilation_status(outSPIRVRes) != shaderc_compilation_status_success) {
-        printf("GLSL to SPIRV comp failed!\n%s\n", shaderc_result_get_error_message(outSPIRVRes));
-    }
-
-    spvc_parsed_ir ir = NULL;
-    spvc_context_set_error_callback(context, &error_callback, NULL);
-    spvc_context_parse_spirv(context, (const SpvId *) shaderc_result_get_bytes(outSPIRVRes),
-                             shaderc_result_get_length(outSPIRVRes) / sizeof(SpvId), &ir);
-
-    shaderc_result_release(outSPIRVRes);
-
-    spvc_compiler compiler_glsl = NULL;
-    spvc_context_create_compiler(context, SPVC_BACKEND_GLSL, ir, SPVC_CAPTURE_MODE_TAKE_OWNERSHIP, &compiler_glsl);
-
-    spvc_compiler_options options = NULL;
-    spvc_compiler_create_compiler_options(compiler_glsl, &options);
-    spvc_compiler_options_set_uint(options, SPVC_COMPILER_OPTION_GLSL_VERSION, 300);
-    spvc_compiler_options_set_bool(options, SPVC_COMPILER_OPTION_GLSL_ENABLE_420PACK_EXTENSION, SPVC_FALSE);
-    spvc_compiler_options_set_bool(options, SPVC_COMPILER_OPTION_GLSL_ES, SPVC_TRUE);
-    spvc_compiler_install_compiler_options(compiler_glsl, options);
-    const char *result = NULL;
-    spvc_compiler_compile(compiler_glsl, &result);
-
-    converted = result;
-
-    converted = ReplaceWord(converted, "#version 300 es", "#version 320 es");
-    // printf("Output GLSL ES:\n%s", converted);
-
     gles_glShaderSource(shader, 1, (const GLchar * const*)((converted)?(&converted):(&source)), NULL);
 
     free(source);
     free(converted);
-    spvc_context_release_allocations(context);
 }
 
 int isProxyTexture(GLenum target) {
