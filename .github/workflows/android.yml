@@ -19,6 +19,6 @@ jobs:
       uses: actions/upload-artifact@main
       with:
          name: output
-         path: libs/*.so
+         path: libs/**/*.so
          retention-days: 7
        
