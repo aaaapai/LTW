@@ -36,8 +36,6 @@ void *glXGetProcAddressARB(const char *name) {
 
 int proxy_width, proxy_height, proxy_intformat, maxTextureSize;
 
-GLAPI APIENTRY void glBindFragDataLocationEXT(GLuint program, GLuint colorNumber, const char * name);
-
 void(*gles_glGetTexLevelParameteriv)(GLenum target, GLint level, GLenum pname, GLint *params);
 void(*gles_glShaderSource)(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length);
 GLuint (*gles_glCreateShader) (GLenum shaderType);
@@ -52,11 +50,11 @@ void * (*gles_glMapBufferRange) (GLenum target, GLintptr offset, GLsizeiptr leng
 const GLubyte * (*gles_glGetString) (GLenum name);
 void (*gles_glTexParameterf) (GLenum target, GLenum pname, GLfloat param);
 
-GLAPI APIENTRY void glBindFragDataLocation(GLuint program, GLuint colorNumber, const char * name) {
-    glBindFragDataLocationEXT(program, colorNumber, name);
-}
+GLAPI APIENTRY void glBindFragDataLocation(GLuint program, GLuint colorNumber, const char * name);
+GLAPI APIENTRY void glBindFragDataLocationEXT(GLuint program, GLuint colorNumber, const char * name);
 
 GLAPI APIENTRY void glClearDepth(GLdouble depth) {
+    LOOKUP_FUNC(glClearDepthf);
     glClearDepthf(depth);
 }
 
