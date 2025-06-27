@@ -36,6 +36,8 @@ void *glXGetProcAddressARB(const char *name) {
 
 int proxy_width, proxy_height, proxy_intformat, maxTextureSize;
 
+void glBindFragDataLocationEXT(GLuint program, GLuint colorNumber, const char * name);
+
 void(*gles_glGetTexLevelParameteriv)(GLenum target, GLint level, GLenum pname, GLint *params);
 void(*gles_glShaderSource)(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length);
 GLuint (*gles_glCreateShader) (GLenum shaderType);
@@ -49,6 +51,14 @@ void (*gles_glGetBufferParameteriv) (GLenum target, GLenum pname, GLint *params)
 void * (*gles_glMapBufferRange) (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
 const GLubyte * (*gles_glGetString) (GLenum name);
 void (*gles_glTexParameterf) (GLenum target, GLenum pname, GLfloat param);
+
+void glBindFragDataLocation(GLuint program, GLuint colorNumber, const char * name) {
+    glBindFragDataLocationEXT(program, colorNumber, name);
+}
+
+void glClearDepth(GLdouble depth) {
+    glClearDepthf(depth);
+}
 
 GLAPI APIENTRY void *glMapBuffer(GLenum target, GLenum access) {
     // Use: GL_EXT_map_buffer_range
@@ -92,7 +102,7 @@ GLAPI APIENTRY void *glMapBuffer(GLenum target, GLenum access) {
     }
 
     gles_glGetBufferParameteriv(target, GL_BUFFER_SIZE, &length);
-    return gles_glMapBufferRange(target, 0, length, access_range);
+    return glMapBufferRange(target, 0, length, access_range);
 }
 
 static GLenum currShaderType = GL_VERTEX_SHADER;
@@ -114,6 +124,69 @@ void error_callback(void* context, const char* str) {
 
 GLAPI APIENTRY void glShaderSource(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length) {
     LOOKUP_FUNC(glShaderSource)
+
+    // DBG(printf("glShaderSource(%d, %d, %p, %p)\n", shader, count, string, length);)
+    char *source = NULL;
+    char *converted;
+
+    // get the size of the shader sources and than concatenate in a single string
+    int l = 0;
+    for (int i=0; i<count; i++) l+=(length && length[i] >= 0)?length[i]:strlen(string[i]);
+    if (source) free(source);
+    source = calloc(1, l+1);
+    if(length) {
+        for (int i=0; i<count; i++) {
+            if(length[i] >= 0)
+                strncat(source, string[i], length[i]);
+            else
+                strcat(source, string[i]);
+        }
+    } else {
+        for (int i=0; i<count; i++)
+            strcat(source, string[i]);
+    }
+
+    char *source2 = strchr(source, '#');
+    if (!source2) {
+        source2 = source;
+    }
+    // are there #version?
+    if (!strncmp(source2, "#version ", 9)) {
+        converted = strdup(source2);
+        if (converted[9] == '1') {
+            if (converted[10] - '0' < 2) {
+                // 100, 110 -> 120
+                converted[10] = '2';
+            } else if (converted[10] - '0' < 6) {
+                // 130, 140, 150 -> 330
+                converted[9] = converted[10] = '3';
+            }
+        }
+        // remove "core", is it safe?
+        if (!strncmp(&converted[13], "core", 4)) {
+            strncpy(&converted[13], "\n//c", 4);
+        }
+    } else {
+        converted = calloc(1, strlen(source) + 13);
+        strcpy(converted, "#version 120\n");
+        strcpy(&converted[13], strdup(source));
+    }
+
+    int convertedLen = strlen(converted);
+
+    // patch OptiFine 1.17.x
+    if (FindString(converted, "\nuniform mat4 textureMatrix = mat4(1.0);")) {
+        InplaceReplace(converted, &convertedLen, "\nuniform mat4 textureMatrix = mat4(1.0);", "\n#define textureMatrix mat4(1.0)");
+    }
+
+    // some needed exts
+    const char* extensions =
+        "#extension GL_EXT_blend_func_extended : enable\n"
+        // For OptiFine (see patch above)
+        "#extension GL_EXT_shader_non_constant_global_initializers : enable\n";
+    converted = InplaceInsert(GetLine(converted, 1), extensions, converted, &convertedLen);
+
+	
     if(context == NULL) {
         spvc_context_create(&context);
         if(context == NULL) {
@@ -163,13 +236,15 @@ GLAPI APIENTRY void glShaderSource(GLuint shader, GLsizei count, const GLchar * 
     const char *result = NULL;
     spvc_compiler_compile(compiler_glsl, &result);
 
-    const char* converted = result;
+    converted = result;
 
     converted = ReplaceWord(converted, "#version 300 es", "#version 320 es");
     // printf("Output GLSL ES:\n%s", converted);
 
-    gles_glShaderSource(shader, 1, &converted, NULL);
+    gles_glShaderSource(shader, 1, (const GLchar * const*)((converted)?(&converted):(&source)), NULL);
 
+    free(source);
+    free(converted);
     spvc_context_release_allocations(context);
 }
 
