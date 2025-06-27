@@ -11,6 +11,7 @@
 #include "string_utils.h"
 
 #define GL_PROXY_TEXTURE_RECTANGLE_ARB    0x84F7
+#define GL_TEXTURE_LOD_BIAS_EXT           0x8501
 
 #define LOOKUP_FUNC(func) \
     if (!gles_##func) { \
