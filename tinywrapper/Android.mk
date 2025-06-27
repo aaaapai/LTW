@@ -11,7 +11,7 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := spirv-cross
-LOCAL_SRC_FILES := SPIRVCross/libspirv-cross-c-shared.so
+LOCAL_SRC_FILES := SPIRVCross/libspirv-cross-c-shared.so SPIRVCross/libSPIRV-Tools-shared.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
