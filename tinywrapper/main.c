@@ -5,7 +5,7 @@
 #include <malloc.h>
 
 #include "GL/glcorearb.h"
-#include <GLES3/gl3.h>
+#include <GLES3/gl32.h>
 #include "SPIRVCross/include/spirv_cross_c.h"
 #include "shaderc/include/shaderc.h"
 #include "string_utils.h"
@@ -54,7 +54,6 @@ GLAPI APIENTRY void glBindFragDataLocation(GLuint program, GLuint colorNumber, c
 GLAPI APIENTRY void glBindFragDataLocationEXT(GLuint program, GLuint colorNumber, const char * name);
 
 GLAPI APIENTRY void glClearDepth(GLdouble depth) {
-    LOOKUP_FUNC(glClearDepthf);
     glClearDepthf(depth);
 }
 
