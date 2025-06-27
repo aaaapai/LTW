@@ -4,6 +4,7 @@
 #include <string.h>
 #include <malloc.h>
 
+#include "GL/glcorearb.h"
 #include <GLES3/gl3.h>
 #include "SPIRVCross/include/spirv_cross_c.h"
 #include "shaderc/include/shaderc.h"
