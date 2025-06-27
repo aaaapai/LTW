@@ -13,6 +13,20 @@
 #define GL_PROXY_TEXTURE_RECTANGLE_ARB    0x84F7
 #define GL_TEXTURE_LOD_BIAS_EXT           0x8501
 
+void* glXGetProcAddress(const char *name) {
+        void* proc = dlsym(RTLD_DEFAULT, (const char*)name);
+
+        if (!proc) {
+            return NULL;
+        }
+
+        return proc;
+}
+
+void *glXGetProcAddressARB(const char *name) {
+    return glXGetProcAddress(name);
+}
+
 #define LOOKUP_FUNC(func) \
     if (!gles_##func) { \
         gles_##func = dlsym(RTLD_NEXT, #func); \
@@ -36,7 +50,7 @@ void * (*gles_glMapBufferRange) (GLenum target, GLintptr offset, GLsizeiptr leng
 const GLubyte * (*gles_glGetString) (GLenum name);
 void (*gles_glTexParameterf) (GLenum target, GLenum pname, GLfloat param);
 
-void *glMapBuffer(GLenum target, GLenum access) {
+GLAPI APIENTRY void *glMapBuffer(GLenum target, GLenum access) {
     // Use: GL_EXT_map_buffer_range
     LOOKUP_FUNC(glGetBufferParameteriv);
     LOOKUP_FUNC(glMapBufferRange);
@@ -83,7 +97,7 @@ void *glMapBuffer(GLenum target, GLenum access) {
 
 static GLenum currShaderType = GL_VERTEX_SHADER;
 
-GLuint glCreateShader(GLenum shaderType) {
+GLAPI APIENTRY GLuint glCreateShader(GLenum shaderType) {
     LOOKUP_FUNC(glCreateShader);
 
     currShaderType = shaderType;
@@ -98,7 +112,7 @@ void error_callback(void* context, const char* str) {
     printf("SPVC Error! \n%s\n", str);
 }
 
-void glShaderSource(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length) {
+GLAPI APIENTRY void glShaderSource(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length) {
     LOOKUP_FUNC(glShaderSource)
     if(context == NULL) {
         spvc_context_create(&context);
@@ -178,7 +192,7 @@ static int inline nlevel(int size, int level) {
     return size;
 }
 
-void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint *params) {
+GLAPI APIENTRY void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint *params) {
     LOOKUP_FUNC(glGetTexLevelParameteriv)
     // NSLog("glGetTexLevelParameteriv(%x, %d, %x, %p)", target, level, pname, params);
     if (isProxyTexture(target)) {
@@ -198,7 +212,7 @@ void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname, GLint *p
     }
 }
 
-void glTexParameterf(GLenum target, GLenum pname, GLfloat param) {
+GLAPI APIENTRY void glTexParameterf(GLenum target, GLenum pname, GLfloat param) {
     LOOKUP_FUNC(glTexParameterf);
 
     // Not supported, crashes some mods that check
@@ -210,7 +224,7 @@ void glTexParameterf(GLenum target, GLenum pname, GLfloat param) {
     gles_glTexParameterf(target, pname, param);
 }
 
-void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *data) {
+GLAPI APIENTRY void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *data) {
     LOOKUP_FUNC(glTexImage2D)
 
     // Regal doesn't handle depth formats well
@@ -260,7 +274,7 @@ void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei widt
 }
 
 // Sodium
-void glMultiDrawElementsBaseVertex(	GLenum mode,
+GLAPI APIENTRY void glMultiDrawElementsBaseVertex(	GLenum mode,
                                        const GLsizei *count,
                                        GLenum type,
                                        const void * const *indices,
@@ -277,7 +291,7 @@ void glMultiDrawElementsBaseVertex(	GLenum mode,
     }
 }
 
-const GLubyte * glGetString(GLenum name) {
+GLAPI APIENTRY const GLubyte * glGetString(GLenum name) {
     LOOKUP_FUNC(glGetString);
 
     switch (name) {
