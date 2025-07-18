@@ -13,7 +13,7 @@
 #define GL_PROXY_TEXTURE_RECTANGLE_ARB    0x84F7
 #define GL_TEXTURE_LOD_BIAS_EXT           0x8501
 
-GLAPI APIENTRY void* glXGetProcAddress(const char *name) {
+void* glXGetProcAddress(const char *name) {
         void* proc = dlsym(RTLD_DEFAULT, (const char*)name);
 
         if (!proc) {
@@ -23,7 +23,7 @@ GLAPI APIENTRY void* glXGetProcAddress(const char *name) {
         return proc;
 }
 
-GLAPI APIENTRY void *glXGetProcAddressARB(const char *name) {
+void *glXGetProcAddressARB(const char *name) {
     return glXGetProcAddress(name);
 }
 
@@ -35,8 +35,6 @@ GLAPI APIENTRY void *glXGetProcAddressARB(const char *name) {
     }
 
 int proxy_width, proxy_height, proxy_intformat, maxTextureSize;
-
-GLAPI APIENTRY void glBindFragDataLocationEXT(GLuint program, GLuint colorNumber, const char * name);
 
 void(*gles_glGetTexLevelParameteriv)(GLenum target, GLint level, GLenum pname, GLint *params);
 void(*gles_glShaderSource)(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length);
@@ -52,20 +50,11 @@ void * (*gles_glMapBufferRange) (GLenum target, GLintptr offset, GLsizeiptr leng
 const GLubyte * (*gles_glGetString) (GLenum name);
 void (*gles_glTexParameterf) (GLenum target, GLenum pname, GLfloat param);
 
-GLAPI APIENTRY void glBindFragDataLocation(GLuint program, GLuint colorNumber, const char * name) {
-    glBindFragDataLocationEXT(program, colorNumber, name);
-}
-
-GLAPI APIENTRY void glClearDepth(GLdouble depth) {
-    glClearDepthf(depth);
-}
-
 GLAPI APIENTRY void *glMapBuffer(GLenum target, GLenum access) {
     // Use: GL_EXT_map_buffer_range
-/*
     LOOKUP_FUNC(glGetBufferParameteriv);
     LOOKUP_FUNC(glMapBufferRange);
-*/
+
     GLenum access_range;
     GLint length;
 
@@ -102,21 +91,19 @@ GLAPI APIENTRY void *glMapBuffer(GLenum target, GLenum access) {
             break;
     }
 
-    glGetBufferParameteriv(target, GL_BUFFER_SIZE, &length);
+    gles_glGetBufferParameteriv(target, GL_BUFFER_SIZE, &length);
     return glMapBufferRange(target, 0, length, access_range);
 }
 
 static GLenum currShaderType = GL_VERTEX_SHADER;
 
-/*
 GLAPI APIENTRY GLuint glCreateShader(GLenum shaderType) {
     LOOKUP_FUNC(glCreateShader);
 
     currShaderType = shaderType;
 
-    return glCreateShader(shaderType);
+    return gles_glCreateShader(shaderType);
 }
-*/
 
 GLAPI APIENTRY void glShaderSource(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length) {
     LOOKUP_FUNC(glShaderSource)
@@ -227,7 +214,6 @@ GLAPI APIENTRY void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum 
     }
 }
 
-/*
 GLAPI APIENTRY void glTexParameterf(GLenum target, GLenum pname, GLfloat param) {
     LOOKUP_FUNC(glTexParameterf);
 
@@ -239,9 +225,7 @@ GLAPI APIENTRY void glTexParameterf(GLenum target, GLenum pname, GLfloat param) 
 
     gles_glTexParameterf(target, pname, param);
 }
-*/
 
-/*
 GLAPI APIENTRY void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *data) {
     LOOKUP_FUNC(glTexImage2D)
 
@@ -276,24 +260,6 @@ GLAPI APIENTRY void glTexImage2D(GLenum target, GLint level, GLint internalforma
         }
     }
 
-    if (isProxyTexture(target)) {
-        if (!maxTextureSize) {
-            glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-            // maxTextureSize = 16384;
-            // NSLog(@"Maximum texture size: %d", maxTextureSize);
-        }
-        proxy_width = ((width<<level)>maxTextureSize)?0:width;
-        proxy_height = ((height<<level)>maxTextureSize)?0:height;
-        proxy_intformat = internalformat;
-        // swizzle_internalformat((GLenum *) &internalformat, format, type);
-    } else {
-        gles_glTexImage2D(target, level, internalformat, width, height, border, format, type, data);
-    }
-}
-*/
-
-GLAPI APIENTRY void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *data) {
-    LOOKUP_FUNC(glTexImage2D)
     if (isProxyTexture(target)) {
         if (!maxTextureSize) {
             glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
