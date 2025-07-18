@@ -5,29 +5,18 @@ LOCAL_PATH := $(HERE_PATH)
 
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := regal
-LOCAL_SRC_FILES := Regal/libRegal.so
+LOCAL_MODULE := EGL_ANGLE
+LOCAL_SRC_FILES := ANGLE/libEGL_angle.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := spirv-cross
-LOCAL_SRC_FILES := SPIRVCross/libspirv-cross-c-shared.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := spirv-tools
-LOCAL_SRC_FILES := SPIRVCross/libSPIRV-Tools-shared.so
-include $(PREBUILT_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := shaderc
-LOCAL_SRC_FILES := shaderc/libshaderc.so
+LOCAL_MODULE := GLESv2_ANGLE
+LOCAL_SRC_FILES := ANGLE/libGLESv2_angle.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := tinywrapper
-LOCAL_SHARED_LIBRARIES := spirv-cross shaderc spirv-tools
-LOCAL_LDLIBS := -lGLESv3 -lEGL
+LOCAL_SHARED_LIBRARIES := EGL_ANGLE GLESv2_ANGLE
 LOCAL_SRC_FILES := main.c string_utils.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/tinywrapper
 include $(BUILD_SHARED_LIBRARY)
