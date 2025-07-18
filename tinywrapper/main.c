@@ -105,13 +105,6 @@ GLAPI APIENTRY GLuint glCreateShader(GLenum shaderType) {
     return gles_glCreateShader(shaderType);
 }
 
-static spvc_context context = NULL;
-static shaderc_compiler_t compiler = NULL;
-
-void error_callback(void* context, const char* str) {
-    printf("SPVC Error! \n%s\n", str);
-}
-
 GLAPI APIENTRY void glShaderSource(GLuint shader, GLsizei count, const GLchar * const *string, const GLint *length) {
     LOOKUP_FUNC(glShaderSource)
 
