@@ -6,6 +6,15 @@
 #define FOLD_CRAFT_LAUNCHER_SHADERCONV_H
 
 #include <GL/gl.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 char* MesaConvertShader(const char *src, GLenum type, unsigned int glsl, unsigned int essl);
+
+#ifdef __cplusplus
+} /* extern C */
+#endif
 
 #endif //FOLD_CRAFT_LAUNCHER_SHADERCONV_H
