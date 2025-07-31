@@ -1,6 +1,6 @@
 /**
  * Created by: artDev
- * Copyright (c) 2025 artDev, SerpentSpirale, PojavLauncherTeam, Digital Genesis LLC.
+ * Copyright (c) 2025 artDev, SerpentSpirale, CADIndie.
  * For use under LGPL-3.0
  */
 void glClearDepth(double depth);
@@ -130,3 +130,5 @@ GLESOVERRIDE(glRenderbufferStorage)
 GLESOVERRIDE(glGetError)
 GLESOVERRIDE(glTexBuffer)
 GLESOVERRIDE(glTexBufferRange)
+GLESOVERRIDE(glMapBufferRange)
+GLESOVERRIDE(glFlushMappedBufferRange)
