@@ -369,8 +369,8 @@ LOCAL_SRC_FILES := glsl_optimizer/src/code/ir_print_glsl_visitor.cpp \
    glsl_optimizer/src/compiler/nir/nir_lower_memcpy.c \
    glsl_optimizer/src/compiler/nir/nir_intrinsics.c \
    glsl_optimizer/src/compiler/nir/nir_lower_locals_to_regs.c
-LOCAL_CPPLAGS += -std=c++20
-LOCAL_CFLAGS += -D_LIB
+LOCAL_CPPLAGS += -std=c++20 -DNOMINMAX -D__STDC_NO_THREADS__ -D_USE_MATH_DEFINES -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -DUTIL_ARCH_LITTLE_ENDIAN -DUNIX -DLINUX -DANDROID -DHAVE_STRUCT_TIMESPEC -DDETECT_OS_ANDROID -DHAVE_OPENGL -DHAVE_OPENGL_ES_1 -DHAVE_OPENGL_ES_2 -DHAVE_OPENGL_ES_3
+LOCAL_CFLAGS += -D_LIB -std=c11
 LOCAL_CFLAGS += -DNOMINMAX
 LOCAL_CFLAGS += -D__STDC_NO_THREADS__
 LOCAL_CFLAGS += -D_USE_MATH_DEFINES
@@ -386,6 +386,6 @@ LOCAL_CFLAGS += -DHAVE_OPENGL_ES_2
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_3
 LOCAL_CPPLAGS += -stdlib=libc++
 LOCAL_LDLIBS += -llog
-# LOCAL_LDLIBS += -fuse-ld=lld -flto=thin -Wl,-plugin-opt=-emulated-tls=0 -llog
-# LOCAL_CFLAGS += -fvisibility=hidden -O3 -pipe -integrated-as -mllvm -polly -mllvm -polly-vectorizer=stripmine -mllvm -polly-invariant-load-hoisting -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-invariant-load-hoisting -flto=thin -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -mllvm -polly-omp-backend=LLVM -mllvm -polly-scheduling=dynamic -flto=thin -fno-emulated-tls -fwhole-program-vtables -fdata-sections -ffunction-sections -fmerge-all-constants -mllvm -hot-cold-split=true -mllvm -polly-detect-keep-going -mllvm -polly-ast-use-context -march=armv8-a+simd -fvisibility=hidden -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
-include $(BUILD_SHARED_LIBRARY)
+LOCAL_LDLIBS += -fuse-ld=lld -llog
+LOCAL_CFLAGS += -O1 -mllvm -polly -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -march=armv8-a+simd -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
+include $(BUILD_STATIC_LIBRARY)
