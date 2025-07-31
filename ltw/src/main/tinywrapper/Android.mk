@@ -4,7 +4,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := shaderconv
 LOCAL_SRC_FILES := glsl_optimizer/src/code/ir_print_glsl_visitor.cpp \
    glsl_optimizer/src/code/optimizer.cpp \
-   glsl_optimizer/src/code/c_wrapper.cpp \
    glsl_optimizer/src/code/GlslConvert.cpp \
    glsl_optimizer/src/code/ir_print_ir_visitor.cpp \
    glsl_optimizer/src/util/compat_layer.cpp \
@@ -386,6 +385,6 @@ LOCAL_CFLAGS += -DHAVE_OPENGL_ES_2
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_3
 LOCAL_CPPLAGS += -stdlib=libc++
 LOCAL_LDLIBS += -llog
-LOCAL_LDLIBS += -fuse-ld=lld -llog
+LOCAL_LDLIBS += -fuse-ld=lld -llog -lc++_static -lc++abi
 LOCAL_CFLAGS += -O1 -mllvm -polly -mllvm -polly-run-inliner -mllvm -polly-run-dce -mllvm -polly-parallel -march=armv8-a+simd -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
 include $(BUILD_STATIC_LIBRARY)
