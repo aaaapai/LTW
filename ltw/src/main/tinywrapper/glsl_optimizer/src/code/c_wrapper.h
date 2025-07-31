@@ -7,7 +7,7 @@
 #ifndef GL4ES_C_WRAPPER_H
 #define GL4ES_C_WRAPPER_H
 
-#include "GL/gl.h"
+#include <GL/gl.h>
 
 #ifdef __cplusplus
 extern "C" {
