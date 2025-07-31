@@ -8,7 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "init.h"
-#include "c_wrapper.h"
+
+extern char* (*optimize_shader)(const char *src, GLenum type, unsigned int glsl, unsigned int essl);
 
 static const char *path_prefix[] = {
         "",
