@@ -16,6 +16,7 @@ jobs:
       uses: actions/upload-artifact@main
       with:
          name: output
-         path: **/libshaderconv.a
+         path: |
+               **/libshaderconv.a
          retention-days: 7
        
