@@ -1,6 +1,6 @@
 name: Android CI
 
-on: [push, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -9,21 +9,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: set up JDK 11
-      uses: actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew :ltw:assembleRelease
-    - name: Upload AAR
-      uses: actions/upload-artifact@v4.6.0
+    - name: Build
+      run: $ANDROID_NDK_LATEST_HOME/ndk-build -j 4 APP_PLATFORM=android-24 APP_ABI=arm64-v8a APP_BUILD_SCRIPT=./ltw/src/main/tinywrapper/Android.mk NDK_APPLICATION_MK=./ltw/src/main/tinywrapper/Application.mk NDK_PROJECT_PATH=.
+    - name: Upload
+      uses: actions/upload-artifact@main
       with:
-         name: output-aar
-         path: ltw/build/outputs/aar/ltw-release.aar
-         if-no-files-found: error
+         name: output
+         path: |
+               **/libshaderconv.a
+         retention-days: 7
        

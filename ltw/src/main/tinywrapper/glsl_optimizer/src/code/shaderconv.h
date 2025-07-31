@@ -1,11 +1,9 @@
 //
-// Created by serpentspirale on 17/06/23.
+// Created by hanji on 2024/10/20.
 //
 
-
-
-#ifndef GL4ES_C_WRAPPER_H
-#define GL4ES_C_WRAPPER_H
+#ifndef FOLD_CRAFT_LAUNCHER_SHADERCONV_H
+#define FOLD_CRAFT_LAUNCHER_SHADERCONV_H
 
 #include <GL/gl.h>
 
@@ -14,10 +12,9 @@ extern "C" {
 #endif
 
 char* MesaConvertShader(const char *src, GLenum type, unsigned int glsl, unsigned int essl);
-  
+
 #ifdef __cplusplus
 } /* extern C */
 #endif
 
-
-#endif //GL4ES_C_WRAPPER_H
+#endif //FOLD_CRAFT_LAUNCHER_SHADERCONV_H

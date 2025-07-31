@@ -1,12 +1,14 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := glsl_optimizer
+LOCAL_MODULE := shaderconv
 LOCAL_SRC_FILES := glsl_optimizer/src/code/ir_print_glsl_visitor.cpp \
    glsl_optimizer/src/code/optimizer.cpp \
    glsl_optimizer/src/code/c_wrapper.cpp \
    glsl_optimizer/src/code/GlslConvert.cpp \
    glsl_optimizer/src/code/ir_print_ir_visitor.cpp \
+   glsl_optimizer/src/code/shaderconv.c \
+   glsl_optimizer/src/code/init.c \
    glsl_optimizer/src/util/compat_layer.cpp \
    glsl_optimizer/src/util/u_qsort.cpp \
    glsl_optimizer/src/util/u_debug_stack_android.cpp \
@@ -369,47 +371,23 @@ LOCAL_SRC_FILES := glsl_optimizer/src/code/ir_print_glsl_visitor.cpp \
    glsl_optimizer/src/compiler/nir/nir_lower_memcpy.c \
    glsl_optimizer/src/compiler/nir/nir_intrinsics.c \
    glsl_optimizer/src/compiler/nir/nir_lower_locals_to_regs.c
-LOCAL_CFLAGS += -D_LIB
+LOCAL_CPPLAGS += -std=c++23 -D_LIB -DNOMINMAX -D__STDC_NO_THREADS__ -D_USE_MATH_DEFINES -D__STDC_LIMIT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_CONSTANT_MACROS -DUTIL_ARCH_LITTLE_ENDIAN -DUNIX -DLINUX -DANDROID -DHAVE_STRUCT_TIMESPEC -DDETECT_OS_ANDROID -DHAVE_OPENGL -DHAVE_OPENGL_ES_1 -DHAVE_OPENGL_ES_2 -DHAVE_OPENGL_ES_3
+LOCAL_CONLYFLAGS += -D_LIB -std=c23
 LOCAL_CFLAGS += -DNOMINMAX
-LOCAL_CFLAGS += -D_USE_MATH_DEFINES
 LOCAL_CFLAGS += -D__STDC_NO_THREADS__
+LOCAL_CFLAGS += -D_USE_MATH_DEFINES
 LOCAL_CFLAGS += -D__STDC_LIMIT_MACROS
 LOCAL_CFLAGS += -D__STDC_FORMAT_MACROS
 LOCAL_CFLAGS += -D__STDC_CONSTANT_MACROS
 LOCAL_CFLAGS += -DUTIL_ARCH_LITTLE_ENDIAN
-LOCAL_CFLAGS += -DUNIX
+LOCAL_CFLAGS += -DUNIX -DLINUX
 LOCAL_CFLAGS += -DANDROID -DHAVE_STRUCT_TIMESPEC -DDETECT_OS_ANDROID
 LOCAL_CFLAGS += -DHAVE_OPENGL
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_1
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_2
-LOCAL_CFLAGS += -fvisibility=hidden
-LOCAL_LDFLAGS := -ffunction-sections -fdata-sections
+LOCAL_CFLAGS += -DHAVE_OPENGL_ES_3
+LOCAL_CPPLAGS += -stdlib=libc++
+LOCAL_LDLIBS += -llog
+LOCAL_LDLIBS += -fuse-ld=lld -llog -lc++_static -lc++abi
+LOCAL_CFLAGS += -O1 -Wall -Wextra -Wno-format -Wno-return-type -ferror-limit=0
 include $(BUILD_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := ltw
-LOCAL_SRC_FILES := \
-    egl.c \
-    proc.c \
-    main.c \
-    glformats.c \
-    basevertex.c \
-    shader_wrapper.c \
-    string_utils.c \
-    framebuffer.c \
-    of_buffer_copier.c \
-    stubs.c \
-    multidraw.c \
-    vertexattrib.c \
-    swizzle.c \
-    license_notice.c \
-    env.c \
-    vgpu_shaderconv/shaderconv.c \
-    unordered_map/unordered_map.c \
-    unordered_map/int_hash.c
-LOCAL_STATIC_LIBRARIES := glsl_optimizer
-LOCAL_LDFLAGS := -ffunction-sections -fdata-sections -Wl,--version-script=$(LOCAL_PATH)/version.script
-# Comment for debugging
-LOCAL_LDFLAGS += -flto -Wl,--gc-sections
-LOCAL_LDLIBS := -llog -lEGL
-include $(BUILD_SHARED_LIBRARY)

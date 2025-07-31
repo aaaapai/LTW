@@ -60,7 +60,7 @@ GlslConvert::~GlslConvert()
 ///////////////////////////////////////////////////////////////////////////////
 
 char * GlslConvert::Optimize(
-	const char * vShaderSource,
+	const char *vShaderSource,
 	ShaderStage vShaderType,
 	ApiTarget vTarget,
 	LanguageTarget vLanguageTarget,
@@ -123,7 +123,7 @@ char * GlslConvert::Optimize(
 	//_mesa_glsl_read_ir(state, shader->ir, input.c_str(), true);
 
 	shader->Source = vShaderSource;
-	const char* source = shader->Source;
+	const char *source = shader->Source;
 
 	if (!(vOptimizationStruct.controlFlags & ControlFlags::CONTROL_SKIP_PREPROCESSING))
 	{
