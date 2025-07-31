@@ -5,6 +5,7 @@
 #ifndef FOLD_CRAFT_LAUNCHER_INIT_H
 #define FOLD_CRAFT_LAUNCHER_INIT_H
 
+#include <GL/gl.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
