@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build
-      run: $ANDROID_NDK_LATEST_HOME/ndk-build APP_PLATFORM=android-24 APP_ABI=arm64-v8a APP_BUILD_SCRIPT=./ltw/src/main/tinywrapper/Android.mk NDK_APPLICATION_MK=./ltw/src/main/tinywrapper/Application.mk NDK_PROJECT_PATH=.
+      run: $ANDROID_NDK_LATEST_HOME/ndk-build -j 4 APP_PLATFORM=android-24 APP_ABI=arm64-v8a APP_BUILD_SCRIPT=./ltw/src/main/tinywrapper/Android.mk NDK_APPLICATION_MK=./ltw/src/main/tinywrapper/Application.mk NDK_PROJECT_PATH=.
     - name: Upload
       uses: actions/upload-artifact@main
       with:
