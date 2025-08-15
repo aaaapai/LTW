@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-std:: MesaConvertShader(const char *src, GLenum type, unsigned int glsl, unsigned int essl);
+std::string MesaConvertShader(const char *src, GLenum type, unsigned int glsl, unsigned int essl);
 
 #ifdef __cplusplus
 } /* extern C */
