@@ -8,14 +8,6 @@
 #include <GL/gl.h>
 #include <string>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 std::string MesaConvertShader(const char *src, GLenum type, unsigned int glsl, unsigned int essl);
-
-#ifdef __cplusplus
-} /* extern C */
-#endif
 
 #endif //FOLD_CRAFT_LAUNCHER_SHADERCONV_H
