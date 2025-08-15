@@ -9,14 +9,12 @@
 #include <stdio.h>
 #include "init.h"
 
-extern char* (*optimize_shader)(const char *src, GLenum type, unsigned int glsl, unsigned int essl);
-
 static const char *path_prefix[] = {
         "",
         "/opt/vc/lib/",
         "/usr/local/lib/",
         "/usr/lib/",
-        NULL,
+        nullptr,
 };
 
 static const char *lib_ext[] = {
@@ -25,7 +23,7 @@ static const char *lib_ext[] = {
         "so.2",
         "dylib",
         "dll",
-        NULL,
+        nullptr,
 };
 
 void *open_lib(const char **names, const char *override) {
