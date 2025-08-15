@@ -6,6 +6,7 @@
 #define FOLD_CRAFT_LAUNCHER_SHADERCONV_H
 
 #include <GL/gl.h>
+#include <string>
 
 #ifdef __cplusplus
 extern "C" {
