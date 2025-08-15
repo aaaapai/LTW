@@ -7,8 +7,7 @@ LOCAL_SRC_FILES := glsl_optimizer/src/code/ir_print_glsl_visitor.cpp \
    glsl_optimizer/src/code/c_wrapper.cpp \
    glsl_optimizer/src/code/GlslConvert.cpp \
    glsl_optimizer/src/code/ir_print_ir_visitor.cpp \
-   glsl_optimizer/src/code/shaderconv.c \
-   glsl_optimizer/src/code/init.c \
+   glsl_optimizer/src/code/shaderconv.cpp \
    glsl_optimizer/src/util/compat_layer.cpp \
    glsl_optimizer/src/util/u_qsort.cpp \
    glsl_optimizer/src/util/u_debug_stack_android.cpp \
