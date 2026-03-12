@@ -382,8 +382,8 @@ LOCAL_CFLAGS += -DANDROID -DHAVE_STRUCT_TIMESPEC -DDETECT_OS_ANDROID
 LOCAL_CFLAGS += -DHAVE_OPENGL
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_1
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_2
-LOCAL_CFLAGS += -fvisibility=hidden -O3 -flto -mllvm -polly
-LOCAL_LDFLAGS := -ffunction-sections -fdata-sections -flto
+LOCAL_CFLAGS += -fvisibility=hidden -O3 -mllvm -polly
+LOCAL_LDFLAGS := -ffunction-sections -fdata-sections
 LOCAL_LDLIBS := -llog -lc++_static -lc++abi
 include $(BUILD_STATIC_LIBRARY)
 
