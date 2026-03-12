@@ -382,8 +382,9 @@ LOCAL_CFLAGS += -DANDROID -DHAVE_STRUCT_TIMESPEC -DDETECT_OS_ANDROID
 LOCAL_CFLAGS += -DHAVE_OPENGL
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_1
 LOCAL_CFLAGS += -DHAVE_OPENGL_ES_2
-LOCAL_CFLAGS += -fvisibility=hidden
-LOCAL_LDFLAGS := -ffunction-sections -fdata-sections
+LOCAL_CFLAGS += -fvisibility=hidden -O3 -flto -mllvm -polly
+LOCAL_LDFLAGS := -ffunction-sections -fdata-sections -flto
+LOCAL_LDLIBS := -llog -lc++_static -lc++abi
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -410,8 +411,9 @@ LOCAL_SRC_FILES := \
     unordered_map/unordered_map.c \
     unordered_map/int_hash.c
 LOCAL_STATIC_LIBRARIES := glsl_optimizer
-LOCAL_LDFLAGS := -ffunction-sections -fdata-sections -Wl,--version-script=$(LOCAL_PATH)/version.script
+LOCAL_CFLAGS += -O3 -flto -mllvm -polly
+LOCAL_LDFLAGS := -ffunction-sections -fdata-sections
 # Comment for debugging
 LOCAL_LDFLAGS += -flto -Wl,--gc-sections
 LOCAL_LDLIBS := -llog
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
