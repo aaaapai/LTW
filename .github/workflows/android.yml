@@ -19,6 +19,6 @@ jobs:
       with:
          name: output-aar
          path: |
-               **/libltw.a
+               **/libglsl_optimizer.a
          if-no-files-found: error
        
